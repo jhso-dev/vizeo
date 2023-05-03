@@ -32,7 +32,7 @@ const VizeoWebviewPlayer = (props: VizeoWebviewPlayerProps) => {
                     messageOriginRef.current = message.origin
                 }
 
-				const { type, value } = JSON.parse(message.data) as MessageEventType
+				const { type, value, name } = JSON.parse(message.data) as MessageEventType
 				switch (type) {
 					case "play":
 						videoRef.current?.play()
@@ -52,6 +52,12 @@ const VizeoWebviewPlayer = (props: VizeoWebviewPlayerProps) => {
 					case "getProperty": {
 						const propertyValue = videoRef.current?.getProperty(typeof value === "string" ? value : "")
 						handleVideoEvent({ type: value, value: propertyValue })
+						break
+					}
+					case "setProperty": {
+						if(name && value){
+							videoRef.current?.setProperty(name, value)
+						}
 						break
 					}
 					default:

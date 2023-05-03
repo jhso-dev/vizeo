@@ -12,7 +12,8 @@ import styled from "styled-components"
 
 export interface MessageEventType {
 	type: string
-	value?: Record<string, unknown> | string | number | boolean
+	value?: string | number | boolean
+	name?: string
 }
 export interface VizeoPlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
 	hlsConfig?: Partial<HlsConfig>
@@ -26,6 +27,7 @@ export interface VideoHandle {
 	pause(): void
 	mute(): void
 	unMute(): void
+	setProperty(name?: string, value?: string | number | boolean): void
 	getProperty(name: string): string | number | boolean | undefined
 }
 
@@ -78,6 +80,15 @@ const VizeoPlayer: ForwardRefRenderFunction<VideoHandle, VizeoPlayerProps> = (pr
 			unMute: () => {
 				if (videoRef.current?.muted === true) {
 					videoRef.current.muted = false
+				}
+			},
+			setProperty: (name: string, value: string | number | boolean ) => {
+				if (videoRef.current && videoRef.current[name]) {
+					try{
+						videoRef.current[name] = value
+					} catch(e){
+						console.error(`Unable to set ${name} with ${value}`)
+					}
 				}
 			},
 			getProperty: (name: string): string | number | boolean | undefined => {
