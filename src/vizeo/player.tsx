@@ -122,6 +122,21 @@ const VizeoPlayer: ForwardRefRenderFunction<VideoHandle, VizeoPlayerProps> = (pr
 		}
 	}, [handleVideoEvent])
 
+	useEffect(()=>{
+		const onVisibilityChange = () => {
+			const {visibilityState} = document
+			if(visibilityState === "hidden"){
+				videoRef.current?.pause()
+			} else if(visibilityState === "visible"){
+				videoRef.current?.load()
+			}
+		}
+
+		document.addEventListener("visibilitychange", onVisibilityChange)
+
+		return () => document.removeEventListener("visibilitychange", onVisibilityChange)
+	}, [])
+
 	useEffect(() => {
 		let hls: Hls
 		const video = videoRef.current
